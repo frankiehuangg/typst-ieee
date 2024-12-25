@@ -27,8 +27,8 @@ This is my personal IEEE paper template written in [Typst](https://typst.com), m
 
 ## 🗒️ Acknowledgments
 
-This project was based on IF3230 Raft Consensus Algorithm Project
+This template is based on the following publicly accessible templates
 
-- Thanks to God
-- Thanks to Mr. Achmad Imam Kistijantoro and Ms. Robithoh Annur as our lecturers
-- Thanks to IF3230 assistants for creating and designing this project.
+- [typst/templates](https://github.com/typst/templates/tree/main/charged-ieee)
+- [bsp0109/ieee-typst-template](https://github.com/bsp0109/ieee-typst-template)
+- [DawnEver/ieee-conference-typst-template](https://github.com/DawnEver/ieee-conference-typst-template)
