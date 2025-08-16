@@ -1,6 +1,6 @@
 #let preview(
-  abstract: none, 
-  index-terms: ()
+  abstract: none,
+  index-terms: (),
 ) = [
   #if abstract != none [
     #set text(weight: 700)
@@ -9,7 +9,7 @@
 
   #if index-terms != () [
     #set text(weight: 700)
-    #h(1em)_Index terms_---#index-terms.join(", ")
+    _Keywords_---#index-terms.join(", ")
     #v(2pt)
   ]
 ]

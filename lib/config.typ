@@ -1,14 +1,14 @@
 #let config(
-  title: [Paper Title], 
+  title: [Paper Title],
   authors: (),
   paper-size: "us-letter",
   figure-supplement: [Figure],
-  bib-file: "refs.bib", 
-  content
+  bib-file: "refs.bib",
+  content,
 ) = [
   #set document(
-    title: title,
-    author: authors
+    title: text(hyphenate: false)[#title],
+    author: authors,
   )
 
   #set columns(gutter: 12pt)
@@ -23,22 +23,25 @@
         top: (55pt / 279mm) * 100%,
         bottom: (64pt / 279mm) * 100%,
       )
-    }
+    },
   )
 
   #set text(
     font: "Times New Roman",
-    size: 10pt
+    size: 10pt,
   )
 
   #set par(
-    spacing: 0.45em, 
-    leading: 0.45em,
-    justify: true, 
-    first-line-indent: 1em
+    spacing: 1em,
+    leading: 1em,
+    justify: true,
+    first-line-indent: (
+      amount: 1em,
+      all: true,
+    ),
   )
 
-  #set heading(numbering: "I.A.a)")
+  #set heading(numbering: "I.A.a)1)")
   #show heading: it => {
     let levels = counter(heading).get()
     let deepest = if levels != () {
@@ -48,6 +51,7 @@
     }
 
     set text(10pt, weight: 400)
+
     if it.level == 1 {
       let is-ack = it.body in ([Acknowledgment], [Acknowledgement], [Acknowledgments], [Acknowledgements])
 
@@ -63,26 +67,30 @@
       }
 
       it.body
-    } else if it.level == 2 {
-      set par(first-line-indent: 0pt)
-      set text(style: "italic")
+    } else {
+      if it.level == 2 {
+        set par(first-line-indent: 0pt)
+        set text(style: "italic")
+      } else {
+        set par(first-line-indent: 0pt, hanging-indent: 2em, spacing: 0.5em)
+      }
 
       show: block.with(spacing: 10pt, sticky: true)
 
       if it.numbering != none {
-        numbering("A.", deepest)
+        if it.level == 2 {
+          numbering("A.", deepest)
+        } else if it.level == 3 {
+          numbering("a)", deepest)
+        } else if it.level == 4 {
+          numbering("1)", deepest)
+        }
+
         h(7pt, weak: true)
       }
 
       it.body
-    } else [
-      #if it.level == 3 {
-        numbering("a)", deepest)
-        [ ]
-      }
-
-      _#(it.body):_
-    ]
+    }
   }
 
   #show raw: set text(
@@ -99,7 +107,7 @@
     if it.element != none and it.element.func() == math.equation {
       link(it.element.location(), numbering(
         it.element.numbering,
-        ..counter(math.equation).at(it.element.location())
+        ..counter(math.equation).at(it.element.location()),
       ))
     } else {
       it
@@ -108,7 +116,7 @@
 
   #set enum(numbering: "1)a)i)")
 
-  #set enum(indent: 10pt, body-indent: 9pt)
+  #set enum(indent: 0pt, body-indent: 3pt, spacing: 1em)
   #set list(indent: 10pt, body-indent: 9pt)
 
   #show figure: set block(spacing: 15.5pt)
@@ -118,14 +126,11 @@
   #show figure.where(kind: table): set figure(numbering: "I")
   #show figure.where(kind: image): set figure(supplement: figure-supplement, numbering: "1")
   #show figure.caption: set text(size: 8pt)
-  #show figure.caption: set align(start)
-  #show figure.caption.where(kind: table): set align(center)
+  #show figure.caption: set align(center)
 
   #show figure: fig => {
     let prefix = (
-      if fig.kind == table [TABLE]
-      else if fig.kind == image [Figure]
-      else [#fig.supplement]
+      if fig.kind == table [TABLE] else if fig.kind == image [Figure] else [#fig.supplement]
     )
     let numbers = numbering(fig.numbering, ..fig.counter.at(fig.location()))
     show figure.caption: it => [#prefix~#numbers: #it.body]
@@ -134,7 +139,7 @@
   }
 
   #set par(leading: 0.5em)
-  
+
   #content
 
   #if bib-file != none {
